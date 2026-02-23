@@ -1,7 +1,8 @@
 (ns minusthree.platform.jvm.glfw
   (:require
    [minusthree.engine.engine :as engine]
-   [minusthree.engine.time :as time])
+   [minusthree.engine.time :as time]
+   [minusthree.platform.jvm.glfw-input :as glfw-input])
   (:import
    [org.lwjgl.glfw Callbacks GLFW GLFWErrorCallback]
    [org.lwjgl.opengl GL GL42]))
@@ -39,10 +40,11 @@
    (println "hello -3 + glfw")
    (letfn [(we-begin-the-game []
              (GLFW/glfwShowWindow glfw-window)
-             {::time/total    0.0
-              :config        (dissoc config :stop-flag*)
-              :glfw-window   glfw-window
-              :refresh-flag* refresh-flag*})
+             (-> {::time/total    0.0
+                  :config        (dissoc config :stop-flag*)
+                  :glfw-window   glfw-window
+                  :refresh-flag* refresh-flag*}
+                 (glfw-input/set-callbacks)))
 
            (do-we-stop? [_game]
              (or (GLFW/glfwWindowShouldClose glfw-window)
@@ -60,7 +62,8 @@
                (GLFW/glfwSwapBuffers glfw-window)
                (GLFW/glfwPollEvents)
                (GLFW/glfwSetWindowTitle glfw-window (str "frametime(ms): " delta))
-               game))
+               (-> game
+                   (glfw-input/supply))))
 
            (the-game-ends []
              (Callbacks/glfwFreeCallbacks glfw-window)

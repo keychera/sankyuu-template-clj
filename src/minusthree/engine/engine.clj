@@ -6,7 +6,8 @@
    [minusthree.engine.systems :as systems]
    [minusthree.engine.time :as time]
    [minusthree.engine.world :as world]
-   [odoyle.rules :as o]))
+   [odoyle.rules :as o]
+   [minusthree.engine.input :as input]))
 
 (s/def ::init-game (s/keys :req [::world/this ::time/total]))
 
@@ -91,12 +92,14 @@
 (defn post-refresh [new-game]
   (->> new-game
        (rendering/init)
+       (input/init)
        (world/post-world)))
 
 (defn tick [game]
   (-> game
       (update ::world/this o/fire-rules)
       (loading/loading-zone)
+      (input/input-zone)
       (rendering/rendering-zone)))
 
 (defn pre-refresh [old-game]
