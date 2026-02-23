@@ -1,0 +1,14 @@
+{
+    "calva.replConnectSequences": [
+        {
+            "name": "lwjgl game dev",
+            "projectType": "generic",
+            "cljsType": "none",
+            "autoSelectForConnect": true,
+            "nReplPortFile": [
+                ".nrepl-port"
+            ]
+        }
+    ],
+    "html.format.wrapAttributes": "preserve-aligned",
+}

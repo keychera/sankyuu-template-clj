@@ -1,0 +1,39 @@
+{:paths   ["src" "resources"]
+ :deps    {org.clojure/clojure                {:mvn/version "1.12.4"}
+           org.clojure/core.async             {:mvn/version "1.8.741"}
+           org.clojure/core.match             {:mvn/version "1.1.0"}
+
+           generateme/fastmath                {:mvn/version "3.0.0-alpha4"}
+           io.github.keychera/odoyle-rules    {:git/sha "10447b7d8e3c9611fc9d59bc29d5a6d148d10556"}
+           com.rpl/specter                    {:mvn/version "1.1.4"}
+           instaparse/instaparse              {:mvn/version "1.5.0"}
+           org.clj-commons/gloss              {:mvn/version "0.3.6"}
+           cheshire/cheshire                  {:mvn/version "6.1.0"}
+
+           org.lwjgl/lwjgl                    {:mvn/version "3.4.1"}
+           org.lwjgl/lwjgl-glfw               {:mvn/version "3.4.1"}
+           org.lwjgl/lwjgl-opengl             {:mvn/version "3.4.1"}
+           org.lwjgl/lwjgl-stb                {:mvn/version "3.4.1"}
+           org.lwjgl/lwjgl-assimp             {:mvn/version "3.4.1"}
+           io.github.spair/imgui-java-binding {:mvn/version "1.89.0"}
+           io.github.spair/imgui-java-lwjgl3  {:mvn/version "1.89.0"}}
+ :aliases {:jvm-game {:jvm-opts ["--enable-native-access=ALL-UNNAMED"]}
+           :lets     {:deps       {io.github.clojure/tools.build {:git/tag "v0.10.10"
+                                                                  :git/sha "deedd62"}}
+                      :ns-default equipment.lets}
+           :repl     {:extra-paths ["src-dev-jvm"]
+                      :extra-deps  {cider/cider-nrepl                      {:mvn/version "0.57.0"}
+                                    com.phronemophobic/viscous             {:mvn/version "1.3.5"}
+                                    com.clojure-goes-fast/clj-memory-meter {:mvn/version "0.4.0"}}}
+           :windows  {:extra-deps {org.lwjgl/lwjgl$natives-windows            {:mvn/version "3.4.1"}
+                                   org.lwjgl/lwjgl-glfw$natives-windows       {:mvn/version "3.4.1"}
+                                   org.lwjgl/lwjgl-opengl$natives-windows     {:mvn/version "3.4.1"}
+                                   org.lwjgl/lwjgl-stb$natives-windows        {:mvn/version "3.4.1"}
+                                   org.lwjgl/lwjgl-assimp$natives-windows     {:mvn/version "3.4.1"}
+                                   io.github.spair/imgui-java-natives-windows {:mvn/version "1.89.0"}}}
+           :linux    {:extra-deps {org.lwjgl/lwjgl$natives-linux            {:mvn/version "3.4.1"}
+                                   org.lwjgl/lwjgl-glfw$natives-linux       {:mvn/version "3.4.1"}
+                                   org.lwjgl/lwjgl-opengl$natives-linux     {:mvn/version "3.4.1"}
+                                   org.lwjgl/lwjgl-stb$natives-linux        {:mvn/version "3.4.1"}
+                                   org.lwjgl/lwjgl-assimp$natives-linux     {:mvn/version "3.4.1"}
+                                   io.github.spair/imgui-java-natives-linux {:mvn/version "1.89.0"}}}}}
