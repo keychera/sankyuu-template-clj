@@ -30,6 +30,10 @@
 
 (s/def ::buffer some?)
 
+;; we can't handle these yet
+;; - #define
+;; and maybe many other construct
+;; solution: just force the shader string to comply for now
 (def shader-header-grammar
   "
 Header = Block+
@@ -102,43 +106,9 @@ Anything = Ident | Number | Operator
 
 (defn get-header-source [source]
   ;; just a heuristic split that works for now
-  (let [[_ body] (str/split source #"precision \w* float;\r?\n")
+  (let [[_ body]   (str/split source #"precision \w* float;\r?\n")
         [header _] (str/split body #"(void|int|float|(u*(vec|mat)[234])|sampler[23]D)\s+[a-zA-Z_][a-zA-Z0-9_]*\s*\(")]
-    header))
-
-(comment
-  (let [shader
-        "#version 300 es
-precision mediump float;
-uniform sampler2D u_model;
-uniform mat4 u_view;
-uniform mat4 u_projection;
-uniform mat4[500] u_joint_mats;
-layout(std140) uniform matrix {
-    mat4 mvp;
-} mat;
-layout(std140) uniform Skinning {
-    mat4[500] u_joint_mats;
-};
-const float radius = 15.0;
-const float radius2 = radius * radius;
-layout(location=0) in vec3 POSITION;
-in vec3 NORMAL;
-in vec2 TEXCOORD_0;
-in vec4 WEIGHTS_0;
-in uvec4 JOINTS_0;
-out vec3 Normal;
-out vec2 TexCoords;
-float main()
-{
-  vec4 pos = (vec4(POSITION, 1.0));
-  mat4 skin_mat = ((WEIGHTS_0.x * u_joint_mats[JOINTS_0.x]) + (WEIGHTS_0.y * u_joint_mats[JOINTS_0.y]) + (WEIGHTS_0.z * u_joint_mats[JOINTS_0.z]) + (WEIGHTS_0.w * u_joint_mats[JOINTS_0.w]));
-  vec4 world_pos = (u_model * skin_mat * pos);
-  vec4 cam_pos = (u_view * world_pos);
-  gl_Position = (u_projection * cam_pos);
-  Normal = NORMAL;
-  TexCoords = TEXCOORD_0;
-}"]
-    (-> shader get-header-source parse-header))
-
-  :-)
+    (str/join "\n"
+              (eduction
+               (remove #(str/starts-with? % "//"))
+               (str/split-lines header)))))

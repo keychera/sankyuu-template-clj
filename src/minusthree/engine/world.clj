@@ -23,7 +23,7 @@
     world'))
 
 (defn init-world [game system-coll]
-  (let [systems   (into [] (map resolve-var) system-coll)
+  (let [systems   (into [] (map resolve-var) (flatten (deref system-coll)))
         all-rules (into [] (mapcat (comp resolve-var ::rules)) systems)
         init-fns  (into [] (map #(select-keys % [::init-fn ::post-fn])) systems)]
     (assoc (update game ::this prepare-world game all-rules init-fns)

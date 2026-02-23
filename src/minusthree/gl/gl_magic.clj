@@ -67,7 +67,7 @@
 
            [{:insert-facts _}]
            (let [facts (:insert-facts chant)]
-             (println "will insert" (count facts) "fact(s)")
+             (println "gl-magic will insert" (count facts) "fact(s)")
              (update magician ::facts into facts))
 
            #_"no else handling. m/match will throw on faulty spell."))

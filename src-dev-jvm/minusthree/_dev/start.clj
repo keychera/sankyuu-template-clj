@@ -13,7 +13,7 @@
 (set! *warn-on-reflection* true)
 
 (defn get-config []
-  (let [default {:window-conf {:w 1024 :h 768 :x 500 :y 500}}
+  (let [default {:window-conf {:w 1024 :h 768 :x 500 :y 500 :floating? true}}
         config  "config.edn"]
     (try (with-open [rdr (io/reader (io/input-stream config))]
            (edn/read (java.io.PushbackReader. rdr)))

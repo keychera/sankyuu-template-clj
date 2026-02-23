@@ -84,7 +84,7 @@
       (the-game-ends))))
 
 (defn init [{:keys [::world/this] :as game}]
-  (->> (or this (world/init-world game systems/all))
+  (->> (or this (world/init-world game #'systems/all))
        (loading/init-channel)
        (s/assert ::init-game)))
 
