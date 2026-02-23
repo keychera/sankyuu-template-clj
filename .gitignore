@@ -4,3 +4,5 @@
 .cpcache
 .lsp
 .nrepl-port
+
+config.edn
