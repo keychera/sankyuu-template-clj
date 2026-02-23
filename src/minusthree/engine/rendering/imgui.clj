@@ -11,7 +11,6 @@
    [imgui.gl3 ImGuiImplGl3]
    [imgui.glfw ImGuiImplGlfw]))
 
-
 (def identity-mat (float-array
                    [1.0 0.0 0.0 0.0
                     0.0 1.0 0.0 0.0
@@ -57,14 +56,16 @@
 
   (ImGui/end))
 
-(defn frame [{::camera/keys [view* project* distance]
-              ::keys [imGuiGl3 imGuiglfw]
-              :keys  [config]}]
+(defn frame [{::keys [imGuiGl3 imGuiglfw]
+              :keys  [config]
+              :as game}]
   (.newFrame imGuiglfw)
   (.newFrame imGuiGl3)
   (ImGui/newFrame)
-  (let [{:keys [w h]} (:window-conf config)]
-    (imGuizmoPanel view* project* distance w h))
+  (let [{:keys [view* project* distance]} (camera/get-active-cam game)
+        {:keys [w h]} (:window-conf config)]
+    (when (and view* project* distance)
+      (imGuizmoPanel view* project* distance w h)))
   (let [{:keys [title text]} (:imgui config)]
     (fps-panel/render! title text))
   (ImGui/render)

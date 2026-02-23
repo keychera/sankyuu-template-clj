@@ -1,6 +1,5 @@
 (ns minusthree.engine.rendering
   (:require
-   [minusthree.engine.camera :as camera]
    [minusthree.engine.rendering.imgui :as imgui]
    [minusthree.engine.world :as world]
    [minusthree.model.model-rendering :as model-rendering]
@@ -15,7 +14,6 @@
   (GL45/glEnable GL45/GL_MULTISAMPLE)
   (GL45/glEnable GL45/GL_DEPTH_TEST)
   (-> game
-      (camera/init)
       (imgui/init)))
 
 (defn rendering-zone [game]

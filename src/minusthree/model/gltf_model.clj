@@ -254,11 +254,11 @@
    ::world/rules #'rules})
 
 (defn render-gltf
-  [{::camera/keys [project* view*]}
-   {:keys [program-info gl-data tex-data transform pose-tree skinning-ubo] :as match}]
+  [game {:keys [program-info gl-data tex-data transform pose-tree skinning-ubo] :as match}]
   #_{:clj-kondo/ignore [:inline-def]}
   (def debug-var match)
-  (let [vaos  (::gl-magic/vao gl-data)
+  (let [{:keys [project* view*]} (camera/get-active-cam game)
+        vaos  (::gl-magic/vao gl-data)
         prims (::primitives gl-data)]
     (GL45/glUseProgram (:program program-info))
     (cljgl/set-uniform program-info :u_projection project*)

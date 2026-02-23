@@ -213,11 +213,11 @@
     (GL45/glDrawElements GL45/GL_TRIANGLES face-count GL45/GL_UNSIGNED_INT face-offset)))
 
 (defn render-pmx
-  [{::camera/keys [project* view*]}
-   {:keys [esse-id program-info gl-data tex-data transform pose-tree skinning-ubo] :as match}]
+  [game {:keys [esse-id program-info gl-data tex-data transform pose-tree skinning-ubo] :as match}]
   #_{:clj-kondo/ignore [:inline-def]}
   (def debug-var match)
-  (let [vaos  (::gl-magic/vao gl-data)
+  (let [{:keys [project* view*]} (camera/get-active-cam game)
+        vaos  (::gl-magic/vao gl-data)
         ;; ^floats POSITION   (:POSITION pmx-data) ;; morphs mutate this in a mutable way!
         vao   (get vaos esse-id)]
     (GL45/glUseProgram (:program program-info))
