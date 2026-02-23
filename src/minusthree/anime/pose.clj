@@ -18,7 +18,7 @@
 (defn v3 ^fastmath.vector.Vec3 [x y z] (v/vec3 x y z))
 
 (defn qu ^fastmath.vector.Vec4 [angle-in-degree x y z]
-  (q/quaternion (m/radians angle-in-degree) (v/vec3 x y z)))
+  (q/rotation-quaternion (m/radians angle-in-degree) (v/vec3 x y z)))
 
 (defn pose-anime->bone-anime [pose-animes]
   (reduce
@@ -29,7 +29,11 @@
           (:r posing) (update-in [bone :rotation] (fnil conj []) {:in in :out (:r posing)})
           (:t posing) (update-in [bone :translation] (fnil conj []) {:in in :out (:t posing)})))
       anime out))
-   {} pose-animes))
+   {} 
+   (->> pose-animes
+        (group-by :in)
+        (mapv (fn [[in kfs]] {:in in :out (apply merge (map :out kfs))}))
+        (sort-by :in))))
 
 (comment
   (let [poseA       {"legL" {:r (qu 15 0 0 0)}

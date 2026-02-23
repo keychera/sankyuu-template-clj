@@ -12,11 +12,11 @@
         aspect  (/ w h)]
     (-> (perspective fov aspect 0.1 1000) mat->float-array)))
 
-(def cam-distance 24.0)
+(def cam-distance 8.0)
 
 (def view*
-  (let [position       (v/vec3 0.0 12.0 cam-distance)
-        look-at-target (v/vec3 0.0 12.0 0.0)
+  (let [position       (v/vec3 0.0 18.0 cam-distance)
+        look-at-target (v/vec3 0.0 18.0 0.0)
         up             (v/vec3 0.0 1.0 0.0)]
     (-> (look-at position look-at-target up) mat->float-array)))
 

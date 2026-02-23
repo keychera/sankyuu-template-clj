@@ -35,10 +35,14 @@
 
 (defn blend-kf-with [track blender-fn t]
   (let [[k0 k1] (->> (partition-all 2 1 track)
-                     (filter (fn [[k0 k1]] (<= (:in k0) t (:in k1))))
-                     first)
-        p       (progress t (:in k0) (:in k1))]
-    (blender-fn (:out k0) (:out k1) p)))
+                     (filter (fn [[k0 k1]]
+                               (cond
+                                 (and k0 k1) (<= (:in k0) t (:in k1))
+                                 (nil? k1)   true)))
+                     first)]
+    (if k1
+      (blender-fn (:out k0) (:out k1) (progress t (:in k0) (:in k1)))
+      (:out k0))))
 
 (defn blend-channels [channel t]
   (reduce-kv
@@ -55,10 +59,11 @@
   (let [bone->sample (-> (apply merge bone-animes)
                          (update-vals #(blend-channels % t)))]
     (map (fn [{:keys [name] :as bone}]
-           (let [sample (get bone->sample name)]
+           (if-let [sample (get bone->sample name)]
              (cond-> bone
                (:translation sample) (update :translation v/add (:translation sample))
-               (:rotation sample) (update :rotation q/mult (:rotation sample))))))))
+               (:rotation sample) (update :rotation q/mult (:rotation sample)))
+             bone)))))
 
 (def rules
   (o/ruleset
@@ -96,15 +101,15 @@
                  {:translation (v/vec3 1.0 1.0 1.0) :name "左手"}]
         anime-1 {"左手"
                  {:translation
-                  [{:in 0.0 :out (v/vec3 0.0 0.0 0.0)}
+                  [{:in 0.0 :out (v/vec3 -5.0 0.0 0.0)}
                    {:in 0.5 :out (v/vec3 1.0 1.0 1.0)}
-                   {:in 1.0 :out (v/vec3 0.0 0.0 0.0)}]}}
+                   {:in 1.0 :out (v/vec3 50.0 0.0 0.0)}]}}
         anime-2 {"右手"
                  {:translation
-                  [{:in 0.0 :out (v/vec3 0.0 0.0 0.0)}
+                  [{:in 0.0 :out (v/vec3 -5.0 0.0 0.0)}
                    {:in 0.3 :out (v/vec3 1.0 1.0 1.0)}
                    {:in 0.6 :out (v/vec3 0.0 0.0 0.0)}
-                   {:in 1.0 :out (v/vec3 1.0 1.0 1.0)}]}}]
+                   {:in 1.0 :out (v/vec3 50.0 1.0 1.0)}]}}]
     (into []
-          (anime-xf [anime-1 anime-2] 0.42)
+          (anime-xf [anime-1 anime-2] -0.1)
           bones)))
