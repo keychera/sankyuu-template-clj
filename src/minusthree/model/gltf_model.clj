@@ -6,6 +6,7 @@
    [fastmath.quaternion :as q]
    [fastmath.vector :as v]
    [minusthree.anime.bones :as bones]
+   [minusthree.engine.camera :as camera]
    [minusthree.engine.geom :as geom]
    [minusthree.engine.loading :as loading]
    [minusthree.engine.macros :refer [s->]]
@@ -253,15 +254,15 @@
    ::world/rules #'rules})
 
 (defn render-gltf
-  [{:keys [project view]}
+  [{::camera/keys [project* view*]}
    {:keys [program-info gl-data tex-data transform pose-tree skinning-ubo] :as match}]
   #_{:clj-kondo/ignore [:inline-def]}
   (def debug-var match)
   (let [vaos  (::gl-magic/vao gl-data)
         prims (::primitives gl-data)]
     (GL45/glUseProgram (:program program-info))
-    (cljgl/set-uniform program-info :u_projection project)
-    (cljgl/set-uniform program-info :u_view view)
+    (cljgl/set-uniform program-info :u_projection project*)
+    (cljgl/set-uniform program-info :u_view view*)
     (cljgl/set-uniform program-info :u_model (mat->float-array transform))
 
     (when (seq pose-tree)

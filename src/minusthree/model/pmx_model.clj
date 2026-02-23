@@ -5,6 +5,7 @@
    [fastmath.quaternion :as q]
    [fastmath.vector :as v]
    [minusthree.anime.bones :as bones]
+   [minusthree.engine.camera :as camera]
    [minusthree.engine.geom :as geom]
    [minusthree.engine.macros :refer [s-> vars->map]]
    [minusthree.engine.math :refer [translation-mat]]
@@ -212,7 +213,7 @@
     (GL45/glDrawElements GL45/GL_TRIANGLES face-count GL45/GL_UNSIGNED_INT face-offset)))
 
 (defn render-pmx
-  [{:keys [project view]}
+  [{::camera/keys [project* view*]}
    {:keys [esse-id program-info gl-data tex-data transform pose-tree skinning-ubo] :as match}]
   #_{:clj-kondo/ignore [:inline-def]}
   (def debug-var match)
@@ -220,8 +221,8 @@
         ;; ^floats POSITION   (:POSITION pmx-data) ;; morphs mutate this in a mutable way!
         vao   (get vaos esse-id)]
     (GL45/glUseProgram (:program program-info))
-    (cljgl/set-uniform program-info :u_projection project)
-    (cljgl/set-uniform program-info :u_view view)
+    (cljgl/set-uniform program-info :u_projection project*)
+    (cljgl/set-uniform program-info :u_view view*)
     (cljgl/set-uniform program-info :u_model (mat->float-array transform))
 
     (when (seq pose-tree)
