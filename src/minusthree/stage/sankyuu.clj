@@ -6,16 +6,15 @@
    [minusthree.anime.anime :as anime]
    [minusthree.engine.loading :as loading]
    [minusthree.engine.transform3d :as t3d]
-   [minusthree.engine.utils :refer [raw-from]]
+   [minusthree.engine.utils :refer [raw-from-here]]
    [minusthree.engine.world :as world :refer [esse]]
    [minusthree.gl.cljgl :as cljgl]
    [minusthree.gl.shader :as shader]
    [minusthree.model.assimp-lwjgl :refer [load-gltf-fn]]
    [minusthree.model.gltf-model :as gltf-model]
-   [minusthree.model.pmx-model :as pmx-model :refer [load-pmx-fn]]))
-
-(def gltf-vert (raw-from "minusthree/model/shader/gltf_model.vert"))
-(def gltf-frag (raw-from "minusthree/model/shader/gltf_model.frag"))
+   [minusthree.model.pmx-model :as pmx-model :refer [load-pmx-fn]]
+   [minusthree.model.shader.model-shader :refer [gltf-frag gltf-vert pmx-frag
+                                                 pmx-vert]]))
 
 (defn init-fn [world _game]
   (-> world
@@ -23,14 +22,16 @@
             (loading/push (load-gltf-fn ::wolfie "models/nondist/SilverWolf/SilverWolf.pmx"))
             {::shader/program-info (cljgl/create-program-info-from-source gltf-vert gltf-frag)
              ::t3d/translation (v/vec3 -5.0 0.0 -5.0)})
-      #_(esse ::miku pmx-model/default
-              (loading/push (load-pmx-fn ::miku "models/nondist/HatsuneMiku/Hatsune Miku.pmx"
-                                         ;; this is such a weird workaround= in a jar, uri is case-sensitive and this is the only path that is "wrong"
-                                         {:resource-fixer (fn [p] (or ({"tex\\face.png" "Tex/face.png"} p) p))}))
-              {::shader/program-info (cljgl/create-program-info-from-source "" "")})
-      #_(esse ::wirebeing gltf-model/default
-              (loading/push (load-gltf-fn ::wirebeing "models/wirebeing.glb"))
-              {::shader/program-info (cljgl/create-program-info-from-source "" "")})))
+      (esse ::miku pmx-model/default
+            (loading/push (load-pmx-fn ::miku "models/nondist/HatsuneMiku/Hatsune Miku.pmx"
+                                       ;; this is such a weird workaround= in a jar, uri is case-sensitive and this is the only path that is "wrong"
+                                       {:resource-fixer (fn [p] (or ({"tex\\face.png" "Tex/face.png"} p) p))}))
+            {::shader/program-info (cljgl/create-program-info-from-source pmx-vert pmx-frag)})
+      (esse ::wirebeing gltf-model/default
+            (loading/push (load-gltf-fn ::wirebeing "models/wirebeing.glb"))
+            {::shader/program-info (cljgl/create-program-info-from-source
+                                    (raw-from-here "wirecube.vert")
+                                    (raw-from-here "wirecube.frag"))})))
 
 (defn post-fn [world _game]
   (-> world
