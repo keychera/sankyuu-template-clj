@@ -1,8 +1,7 @@
 (ns minusthree.engine.camera
   (:require
    [clojure.spec.alpha :as s]
-   [fastmath.matrix :refer [mat->float-array]]
-   [fastmath.matrix :as mat]
+   [fastmath.matrix :as mat :refer [mat->float-array]]
    [fastmath.vector :as v]
    [minusthree.engine.macros :refer [s->]]
    [minusthree.engine.math :refer [decompose-Mat4x4 look-at perspective]]
