@@ -4,7 +4,7 @@
    [fastmath.quaternion :as q]
    [fastmath.vector :as v]
    [minusthree.anime.anime :as anime]
-   [minusthree.anime.pose :refer [pose-anime->bone-anime qu]]
+   [minusthree.anime.pose :refer [pose-anime->bone-anime qu v3]]
    [minusthree.engine.loading :as loading]
    [minusthree.engine.transform3d :as t3d]
    [minusthree.engine.utils :refer [raw-from-here]]
@@ -32,7 +32,10 @@
       (esse ::cesium-man gltf-model/default
             (loading/push (load-gltf-fn ::cesium-man "models/nondist/CesiumMan.glb"))
             {::shader/program-info (cljgl/create-program-info-from-source gltf-vert gltf-frag)
-             ::t3d/scale (v/vec3 10.0 10.0 10.0)})))
+             ::t3d/scale (v/vec3 10.0 10.0 10.0)})
+      (esse ::clojuremesh gltf-model/default
+            (loading/push (load-gltf-fn ::clojuremesh "models/nondist/clj.glb"))
+            {::shader/program-info (cljgl/create-program-info-from-source gltf-vert gltf-frag)})))
 
 (def pose-anime
   (let [rest-pose {"右腕"   {:r (qu 90.0 0.5 1.0 0.4)}
@@ -71,32 +74,43 @@
       {:in  0.96 :out poseA}
       {:in  1.0 :out rest-pose}])))
 
+(def be-clojure
+  (let [from-below {"top0" {:t (v3 0.0 -5.0 0.0)}
+                    "bottom0" {:t (v3 0.0 -5.0 0.0)}}
+        to-middle {"top0" {:t (v3 0.0 -0.7 0.0)}
+                   "bottom0" {:t (v3 0.0 -0.7 0.0)}}
+        wiggle1 {"top1" {:r (qu 25.0 0.0 1.0 0.0)}
+                 "bottom1" {:r (qu 25.0 0.0 1.0 0.0)}}
+        wiggle2 {"top1" {:r (qu -25.0 0.0 1.0 0.0)}
+                 "bottom1" {:r (qu -25.0 0.0 1.0 0.0)}}]
+    (pose-anime->bone-anime
+     [{:in 0.0 :out from-below}
+      {:in 0.42 :out to-middle}
+      {:in 0.96 :out to-middle}
+      {:in 1.0 :out from-below}
+      
+      {:in 0.0 :out wiggle1}
+      {:in 0.25 :out wiggle2}
+      {:in 0.5 :out wiggle1}
+      {:in 0.75 :out wiggle2}
+      {:in 1.0 :out wiggle1}])))
+
 (defn post-fn [world _game]
   (-> world
+      (esse ::clojuremesh
+            {::t3d/rotation (qu 90 0.0 1.0 0.0)
+             ::t3d/translation (v3 0.0 18.0 5.0)
+             ::t3d/scale (v3 0.5 0.5 0.5)
+             ::anime/use ::be-clojure})
       (esse ::cesium-man
             {::t3d/translation (v/vec3 5.0 0.0 5.0)
-             ::t3d/rotation (q/mult (q/rotation-quaternion (m/radians -90) (v/vec3 1.0 0.0 0.0))
-                                    (q/rotation-quaternion (m/radians -90) (v/vec3 0.0 0.0 1.0)))})
-      (esse ::be-cute
-            {::anime/duration 1600
-             ::anime/bone-animes
-             [{"右腕"
-               {:rotation
-                [{:in 0.0 :out (q/rotation-quaternion (m/radians 0.0) (v/vec3 0.0 0.0 1.0))}
-                 {:in 0.5 :out (q/rotation-quaternion (m/radians 30.0) (v/vec3 0.0 0.0 1.0))}
-                 {:in 1.0 :out (q/rotation-quaternion (m/radians 0.0) (v/vec3 0.0 0.0 1.0))}]}}
-              ;; we can actually make this in one map, but I am currently hammock-ing about
-              ;; how to compose this in a way that time is defined first
-              {"左腕"
-               {:rotation
-                [{:in 0.0 :out (q/rotation-quaternion (m/radians 0.0) (v/vec3 0.0 0.0 1.0))}
-                 {:in 0.25 :out (q/rotation-quaternion (m/radians -30.0) (v/vec3 0.0 0.0 1.0))}
-                 {:in 0.5 :out (q/rotation-quaternion (m/radians 0.0) (v/vec3 0.0 0.0 1.0))}
-                 {:in 0.75 :out (q/rotation-quaternion (m/radians -30.0) (v/vec3 0.0 0.0 1.0))}
-                 {:in 1.0 :out (q/rotation-quaternion (m/radians 0.0) (v/vec3 0.0 0.0 1.0))}]}}]})
+             ::t3d/rotation (q/mult (q/rotation-quaternion (m/radians -90) (v/vec3 1.0 0.0 0.0)) (q/rotation-quaternion (m/radians -90) (v/vec3 0.0 0.0 1.0)))})
+      (esse ::be-clojure
+            {::anime/duration 3200
+             ::anime/bone-animes [be-clojure]})
       (esse ::be-awesome
             {::anime/duration 3200
-             ::anime/bone-animes [pose-anime]}) 
+             ::anime/bone-animes [pose-anime]})
       (esse ::miku {::anime/use ::be-awesome})
       (esse ::wirebeing {::t3d/translation (v/vec3 -5.0 14.0 0.0)})))
 
