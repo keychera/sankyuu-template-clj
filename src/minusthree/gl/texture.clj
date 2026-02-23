@@ -28,10 +28,10 @@
 (defn load-image [uri]
   (cond
     (or (str/ends-with? uri ".png") (str/ends-with? uri ".bmp"))
-    (utils/get-image
-     uri
-     (fn on-image-load [{:keys [data width height]}]
-       {:image-data data :width width :height height}))
+    (utils/get-image-from-public-resource uri)
+
+    (str/starts-with? uri "data:image/")
+    (utils/get-image-from-data-uri uri)
 
     :else
     (throw (ex-info (str "uri not supported: " uri) {}))))

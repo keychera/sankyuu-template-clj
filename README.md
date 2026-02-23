@@ -1,8 +1,8 @@
 # sankyuu-template-clj
 
-This a clojure project utilizing lwjgl + assimp + opengl + imgui to render [glTF models](https://github.com/KhronosGroup/glTF-Sample-Assets) and [MMD models](https://en.wikipedia.org/wiki/MikuMikuDance).
+This a clojure project utilizing lwjgl + assimp + opengl + imgui to render [glTF models](https://www.khronos.org/gltf/) and [MMD models](https://en.wikipedia.org/wiki/MikuMikuDance). Status: Incompletea and probably not a lot of model can be rendered yet.
 
-This is not a library, framework, nor a game engine. just a prototype/template project (for now...).
+This is not a library, framework, nor a game engine. just a prototype/template project (for now...). Some parts of these project might become its own library later on.
 
 run (tested only in windows at the moment)
 

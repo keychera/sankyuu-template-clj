@@ -31,10 +31,18 @@
             (loading/push (load-gltf-fn ::wirebeing "models/wirebeing.glb"))
             {::shader/program-info (cljgl/create-program-info-from-source
                                     (raw-from-here "wirecube.vert")
-                                    (raw-from-here "wirecube.frag"))})))
+                                    (raw-from-here "wirecube.frag"))})
+      (esse ::cesium-man gltf-model/default
+            (loading/push (load-gltf-fn ::cesium-man "models/nondist/CesiumMan.glb"))
+            {::shader/program-info (cljgl/create-program-info-from-source gltf-vert gltf-frag)
+             ::t3d/scale (v/vec3 10.0 10.0 10.0)})))
 
 (defn post-fn [world _game]
   (-> world
+      (esse ::cesium-man
+            {::t3d/translation (v/vec3 5.0 0.0 5.0)
+             ::t3d/rotation (q/mult (q/rotation-quaternion (m/radians -90) (v/vec3 1.0 0.0 0.0))
+                                    (q/rotation-quaternion (m/radians -90) (v/vec3 0.0 0.0 1.0)))})
       (esse ::be-cute
             {::anime/duration 1600
              ::anime/bone-animes

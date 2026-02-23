@@ -2,7 +2,6 @@
   (:require
    [clojure.core.async :refer [>!! thread chan poll!]]
    [clojure.spec.alpha :as s]
-   [clojure.stacktrace :refer [print-stack-trace]]
    [minusthree.engine.world :as world]
    [odoyle.rules :as o]))
 
@@ -45,8 +44,7 @@
                 (let [loaded-facts (load-fn)]
                   (>!! loading-ch {:esse-id esse-id :new-facts loaded-facts}))
                 (catch Throwable err
-                  (println esse-id "load error!")
-                  (print-stack-trace err)
+                  (println esse-id "load error! cause:" (:cause (Throwable->map err)))
                   (>!! loading-ch {:esse-id esse-id :new-facts [[esse-id ::state :error]]}))))))
         (update game ::world/this
                 (fn [world]

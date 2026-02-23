@@ -6,6 +6,7 @@
   (:import
    [java.nio ByteBuffer FloatBuffer]
    [java.nio.channels Channels ReadableByteChannel]
+   [java.util Base64]
    [org.lwjgl.stb STBImage]
    [org.lwjgl.system MemoryStack MemoryUtil]))
 
@@ -45,16 +46,33 @@
        (.flip buf!?)
        (MemoryUtil/memSlice buf!?)))))
 
-(defn get-image [fname callback]
-  (with-mem-free!? [image-buf!? (resource->ByteBuffer!? (str "public/" fname))]
-    (with-open [stack (MemoryStack/stackPush)]
-      (let [*w    (.mallocInt stack 1)
-            *h    (.mallocInt stack 1)
-            *comp (.mallocInt stack 1)
-            image (STBImage/stbi_load_from_memory image-buf!? *w *h *comp STBImage/STBI_rgb_alpha)]
-        (when (nil? image)
-          (throw (ex-info (str "get-image failed! reason: " (STBImage/stbi_failure_reason)) {})))
-        (callback {:data image :width (.get *w) :height (.get *h)})))))
+(defn base64-uri->ByteBuffer!?
+  "Decodes a data URI directly into a DirectByteBuffer"
+  ^ByteBuffer [uri]
+  (let [base64-str (second (clojure.string/split uri #","))
+        bytes      (.decode (Base64/getDecoder) ^String base64-str)
+        buffer     (MemoryUtil/memAlloc (count bytes))]
+    (.put buffer bytes)
+    (.flip buffer)
+    buffer))
+
+(defn stb-load-from-buffer [buffer!?]
+  (with-open [stack (MemoryStack/stackPush)]
+    (let [*w    (.mallocInt stack 1)
+          *h    (.mallocInt stack 1)
+          *comp (.mallocInt stack 1)
+          image (STBImage/stbi_load_from_memory buffer!? *w *h *comp STBImage/STBI_rgb_alpha)]
+      (when (nil? image)
+        (throw (ex-info (str "get-image failed! reason: " (STBImage/stbi_failure_reason)) {})))
+      {:image-data image :width (.get *w) :height (.get *h)})))
+
+(defn get-image-from-public-resource [public-resource-path]
+  (with-mem-free!? [buffer!? (resource->ByteBuffer!? (str "public/" public-resource-path))]
+    (stb-load-from-buffer buffer!?)))
+
+(defn get-image-from-data-uri [data-uri]
+  (with-mem-free!? [buffer!? (base64-uri->ByteBuffer!? data-uri)]
+    (stb-load-from-buffer buffer!?)))
 
 (defn f32s->get-mat4
   "Return a 4x4 matrix from a float-array / Float32Array `f32s`.
