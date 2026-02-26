@@ -34,7 +34,7 @@
             {::shader/program-info (cljgl/create-program-info-from-source gltf-vert gltf-frag)
              ::t3d/scale (v/vec3 10.0 10.0 10.0)})
       (esse ::clojuremesh gltf-model/default
-            (loading/push (load-gltf-fn ::clojuremesh "models/nondist/clj.glb"))
+            (loading/push (load-gltf-fn ::clojuremesh "models/clj.glb"))
             {::shader/program-info (cljgl/create-program-info-from-source gltf-vert gltf-frag)})))
 
 (def pose-anime
@@ -88,7 +88,7 @@
       {:in 0.42 :out to-middle}
       {:in 0.96 :out to-middle}
       {:in 1.0 :out from-below}
-      
+
       {:in 0.0 :out wiggle1}
       {:in 0.25 :out wiggle2}
       {:in 0.5 :out wiggle1}
@@ -111,7 +111,9 @@
       (esse ::be-awesome
             {::anime/duration 3200
              ::anime/bone-animes [pose-anime]})
-      (esse ::miku {::anime/use ::be-awesome})
+      (esse ::miku
+            {::anime/use ::be-awesome
+             ::t3d/translation (v3 0.0 0.0 0.0)})
       (esse ::wirebeing {::t3d/translation (v/vec3 -5.0 14.0 0.0)})))
 
 (def system

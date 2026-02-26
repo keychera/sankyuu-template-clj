@@ -1,0 +1,20 @@
+[
+    {
+        "key": "alt+1",
+        "command": "calva.connect"
+    },
+    {
+        "key": "alt+2",
+        "command": "calva.loadFile"
+    },
+    {
+        "key": "alt+3",
+        "command": "calva.runCustomREPLCommand",
+        "args": "(do (println \"refreshing!\") (minusthree.-dev.start/refresh))"
+    },
+    {
+        "key": "alt+4",
+        "command": "calva.runCustomREPLCommand",
+        "args": "(do (println \"toggle-stop!\") (minusthree.-dev.start/toggle-stop))"
+    }
+]

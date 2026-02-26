@@ -4,6 +4,10 @@ This a clojure project utilizing lwjgl + assimp + opengl + imgui to render [glTF
 
 This is not a library, framework, nor a game engine. just a prototype/template project (for now...). Some parts of these project might become its own library later on.
 
+require:
+
+[JDK 25](https://adoptium.net/), [Clojure](https://clojure.org/guides/install_clojure)
+
 run (tested only in windows at the moment)
 
 ```
