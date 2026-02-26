@@ -14,9 +14,7 @@
            org.lwjgl/lwjgl-glfw               {:mvn/version "3.4.1"}
            org.lwjgl/lwjgl-opengl             {:mvn/version "3.4.1"}
            org.lwjgl/lwjgl-stb                {:mvn/version "3.4.1"}
-           org.lwjgl/lwjgl-assimp             {:mvn/version "3.4.1"}
-           io.github.spair/imgui-java-binding {:mvn/version "1.89.0"}
-           io.github.spair/imgui-java-lwjgl3  {:mvn/version "1.89.0"}}
+           org.lwjgl/lwjgl-assimp             {:mvn/version "3.4.1"}}
  :aliases {:jvm-game {:jvm-opts ["--enable-native-access=ALL-UNNAMED"]}
            :lets     {:deps       {io.github.clojure/tools.build {:git/tag "v0.10.10"
                                                                   :git/sha "deedd62"}}
@@ -29,11 +27,9 @@
                                    org.lwjgl/lwjgl-glfw$natives-windows       {:mvn/version "3.4.1"}
                                    org.lwjgl/lwjgl-opengl$natives-windows     {:mvn/version "3.4.1"}
                                    org.lwjgl/lwjgl-stb$natives-windows        {:mvn/version "3.4.1"}
-                                   org.lwjgl/lwjgl-assimp$natives-windows     {:mvn/version "3.4.1"}
-                                   io.github.spair/imgui-java-natives-windows {:mvn/version "1.89.0"}}}
+                                   org.lwjgl/lwjgl-assimp$natives-windows     {:mvn/version "3.4.1"}}}
            :linux    {:extra-deps {org.lwjgl/lwjgl$natives-linux            {:mvn/version "3.4.1"}
                                    org.lwjgl/lwjgl-glfw$natives-linux       {:mvn/version "3.4.1"}
                                    org.lwjgl/lwjgl-opengl$natives-linux     {:mvn/version "3.4.1"}
                                    org.lwjgl/lwjgl-stb$natives-linux        {:mvn/version "3.4.1"}
-                                   org.lwjgl/lwjgl-assimp$natives-linux     {:mvn/version "3.4.1"}
-                                   io.github.spair/imgui-java-natives-linux {:mvn/version "1.89.0"}}}}}
+                                   org.lwjgl/lwjgl-assimp$natives-linux     {:mvn/version "3.4.1"}}}}}
