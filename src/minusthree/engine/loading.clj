@@ -44,8 +44,16 @@
                 (let [loaded-facts (load-fn)]
                   (>!! loading-ch {:esse-id esse-id :new-facts loaded-facts}))
                 (catch Throwable err
+                  #_{:clj-kondo/ignore [:inline-def]}
+                  (def error-var err)
                   (println esse-id "load error! cause:" (:cause (Throwable->map err)))
                   (>!! loading-ch {:esse-id esse-id :new-facts [[esse-id ::state :error]]}))))))
         (update game ::world/this
                 (fn [world]
                   (reduce (fn [w' {:keys [esse-id]}] (o/insert w' esse-id ::state :loading)) world to-loads)))))))
+
+(comment
+  (require '[com.phronemophobic.viscous :as viscous])
+
+  (viscous/inspect error-var))
+
